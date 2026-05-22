@@ -6,6 +6,20 @@ export default function QuizApp() {
   const [userData, setUserData] = useState(null)
   const [allQuizzes, setAllQuizzes] = useState({})
   const [allUsers, setAllUsers] = useState({})
+  const [userStats, setUserStats] = useState({
+    quizzesTaken: 0,
+    totalScore: 0,
+    averageScore: 0,
+    bestScore: 0,
+    categoryScores: {},
+    categoryAttempts: {},
+    categorySuccessRate: {},
+    quizHistory: [],
+    totalTimeSpent: 0,
+    currentStreak: 0,
+    bestStreak: 0,
+    lastPlayedDate: null
+  })
 
   const [loginType, setLoginType] = useState('email')
   const [loginEmail, setLoginEmail] = useState('')
@@ -25,6 +39,7 @@ export default function QuizApp() {
   const [showFeedback, setShowFeedback] = useState(false)
   const [feedbackMessage, setFeedbackMessage] = useState('')
   const [currentQuizzes, setCurrentQuizzes] = useState([])
+  const [gameStartTime, setGameStartTime] = useState(null)
 
   const [newQuizData, setNewQuizData] = useState({ cbseStd: '1', subject: '', title: '', questions: [] })
   const [newQuestion, setNewQuestion] = useState({ text: '', options: ['', '', '', ''], correct: 0 })
@@ -72,102 +87,8 @@ export default function QuizApp() {
     { text: 'Area of rectangle (5×3)?', options: ['8', '15', '20', '25'], correct: 1 },
     { text: 'What is 99 - 49?', options: ['40', '45', '50', '55'], correct: 2 },
     { text: 'What is 7 + 8 + 9?', options: ['20', '22', '24', '26'], correct: 2 },
-    { text: 'What is 1/3 + 1/6?', options: ['1/2', '1/3', '1/4', '2/3'], correct: 0 },
-    { text: 'What is 12 × 12?', options: ['120', '132', '144', '156'], correct: 2 },
-    { text: 'What is 50% of 80?', options: ['30', '40', '50', '60'], correct: 1 },
-    { text: 'What is √25?', options: ['3', '4', '5', '6'], correct: 2 },
-    { text: 'What is 13 × 2?', options: ['24', '25', '26', '27'], correct: 2 },
-    { text: 'What is 200 ÷ 5?', options: ['30', '35', '40', '45'], correct: 2 },
-    { text: 'What is 2.5 × 2?', options: ['4', '4.5', '5', '5.5'], correct: 2 },
-    { text: 'LCM of 4 and 6?', options: ['8', '10', '12', '14'], correct: 2 },
-    { text: 'GCD of 12 and 18?', options: ['2', '3', '6', '9'], correct: 2 },
-    { text: 'What is 3/4 × 8?', options: ['4', '5', '6', '7'], correct: 2 },
-    { text: 'What is 180 - 90?', options: ['70', '80', '90', '100'], correct: 2 },
-    { text: 'What is 15 + 15?', options: ['25', '30', '35', '40'], correct: 1 },
-    { text: 'What is 10² - 5²?', options: ['50', '75', '100', '125'], correct: 0 },
-    { text: 'What is 3 × 3 × 3?', options: ['18', '24', '27', '30'], correct: 2 },
-    { text: 'What is 5/5?', options: ['0', '1', '5', '10'], correct: 1 },
-    { text: 'What is 25 + 25 + 25?', options: ['50', '60', '70', '75'], correct: 3 },
-    { text: 'What is 100 ÷ 4?', options: ['20', '24', '25', '30'], correct: 2 },
-    { text: 'What is 2/3 of 12?', options: ['6', '7', '8', '9'], correct: 2 },
-    { text: 'Perimeter of triangle (3,4,5)?', options: ['10', '11', '12', '13'], correct: 2 },
-    { text: 'What is 33 + 22?', options: ['45', '50', '55', '60'], correct: 2 },
-    { text: 'What is 88 - 33?', options: ['45', '50', '55', '60'], correct: 2 },
-    { text: 'What is 11 + 22 + 33?', options: ['55', '60', '65', '70'], correct: 0 },
-    { text: 'What is 4/2?', options: ['1', '2', '3', '4'], correct: 1 },
-    { text: 'What is 50 × 2?', options: ['80', '90', '100', '110'], correct: 2 },
-    { text: 'What is 60 ÷ 6?', options: ['8', '9', '10', '11'], correct: 2 },
-    { text: 'Area of circle (r=2)?', options: ['12.56', '12', '10', '8'], correct: 0 },
-    { text: 'What is 1/10 of 100?', options: ['5', '10', '15', '20'], correct: 1 },
-    { text: 'What is 14 × 5?', options: ['65', '68', '70', '72'], correct: 2 },
-    { text: 'What is 9/3?', options: ['2', '3', '4', '5'], correct: 1 },
-    { text: 'What is 16 - 8?', options: ['6', '7', '8', '9'], correct: 2 },
-    { text: 'What is 40% of 50?', options: ['15', '18', '20', '22'], correct: 2 },
-    { text: 'What is √36?', options: ['4', '5', '6', '7'], correct: 2 },
-    { text: 'What is 7/7?', options: ['0', '1', '7', '14'], correct: 1 },
-    { text: 'What is 17 + 13?', options: ['25', '28', '30', '32'], correct: 2 },
-    { text: 'What is 19 - 9?', options: ['8', '9', '10', '11'], correct: 2 },
-    { text: 'What is 3 + 3 + 3 + 3?', options: ['9', '10', '11', '12'], correct: 3 },
-    { text: 'What is 24 ÷ 8?', options: ['2', '3', '4', '5'], correct: 2 },
-    { text: 'What is 5/10?', options: ['0.3', '0.5', '0.7', '0.9'], correct: 1 },
-    { text: 'What is 18 + 12?', options: ['28', '29', '30', '31'], correct: 2 },
-    { text: 'What is 100 - 50?', options: ['40', '45', '50', '55'], correct: 2 },
-    { text: 'What is 4 × 4 × 4?', options: ['48', '56', '64', '72'], correct: 2 },
-    { text: 'What is 2 + 2 + 2?', options: ['4', '5', '6', '7'], correct: 2 },
-    { text: 'What is 21 ÷ 3?', options: ['5', '6', '7', '8'], correct: 2 },
-    { text: 'What is 30% of 100?', options: ['25', '28', '30', '32'], correct: 2 },
-    { text: 'What is 8 + 7?', options: ['14', '15', '16', '17'], correct: 1 },
-    { text: 'What is 10 - 3?', options: ['5', '6', '7', '8'], correct: 2 },
-    { text: 'What is 6 + 6?', options: ['10', '11', '12', '13'], correct: 2 },
-    { text: 'What is 48 ÷ 6?', options: ['6', '7', '8', '9'], correct: 2 },
-    { text: 'What is 1/2 of 20?', options: ['8', '9', '10', '11'], correct: 2 },
-    { text: 'What is 15 ÷ 5?', options: ['2', '3', '4', '5'], correct: 1 },
-    { text: 'What is 35 + 15?', options: ['45', '48', '50', '52'], correct: 2 },
-    { text: 'What is 70 - 20?', options: ['40', '45', '50', '55'], correct: 2 },
-    { text: 'What is 5 × 5?', options: ['20', '24', '25', '30'], correct: 2 },
-    { text: 'What is 9 + 1?', options: ['8', '9', '10', '11'], correct: 2 },
-    { text: 'What is 20 ÷ 4?', options: ['4', '5', '6', '7'], correct: 1 },
-    { text: 'What is 75% of 80?', options: ['55', '58', '60', '62'], correct: 2 },
-    { text: 'What is √49?', options: ['5', '6', '7', '8'], correct: 2 },
-    { text: 'What is 14 ÷ 7?', options: ['1', '2', '3', '4'], correct: 1 },
-    { text: 'What is 22 + 8?', options: ['28', '29', '30', '31'], correct: 2 },
-    { text: 'What is 40 - 10?', options: ['25', '28', '30', '32'], correct: 2 },
-    { text: 'What is 3 + 4 + 5?', options: ['10', '11', '12', '13'], correct: 2 },
-    { text: 'What is 27 ÷ 3?', options: ['7', '8', '9', '10'], correct: 2 },
-    { text: 'What is 2/4?', options: ['0.25', '0.5', '0.75', '1'], correct: 1 },
-    { text: 'What is 11 × 10?', options: ['100', '110', '120', '130'], correct: 1 },
-    { text: 'What is 55 + 45?', options: ['85', '90', '95', '100'], correct: 1 },
-    { text: 'What is 120 ÷ 10?', options: ['10', '11', '12', '13'], correct: 2 },
-    { text: 'What is 1/8 of 16?', options: ['1', '2', '3', '4'], correct: 1 },
-    { text: 'Sum of angles in triangle?', options: ['90°', '180°', '270°', '360°'], correct: 1 },
-    { text: 'π approximately equals?', options: ['2.14', '3.14', '4.14', '5.14'], correct: 1 },
-    { text: 'Area of circle formula?', options: ['πr', 'πr²', '2πr', 'πd'], correct: 1 },
-    { text: 'What is 26 + 24?', options: ['45', '48', '50', '52'], correct: 2 },
-    { text: 'What is 63 - 13?', options: ['40', '45', '50', '52'], correct: 2 },
-    { text: 'What is 9 + 9?', options: ['16', '17', '18', '19'], correct: 2 },
-    { text: 'What is 32 ÷ 8?', options: ['2', '3', '4', '5'], correct: 2 },
-    { text: 'What is 3/6?', options: ['0.3', '0.5', '0.7', '0.9'], correct: 1 },
-    { text: 'What is 23 + 17?', options: ['35', '38', '40', '42'], correct: 2 },
-    { text: 'What is 90 - 40?', options: ['40', '45', '50', '55'], correct: 2 },
-    { text: 'What is 2 × 2 × 2 × 2?', options: ['8', '12', '16', '20'], correct: 2 },
-    { text: 'What is 4 + 4 + 4?', options: ['10', '11', '12', '13'], correct: 2 },
-    { text: 'What is 36 ÷ 6?', options: ['5', '6', '7', '8'], correct: 1 },
-    { text: 'What is 35% of 100?', options: ['30', '32', '35', '38'], correct: 2 },
-    { text: 'What is 10 + 5?', options: ['13', '14', '15', '16'], correct: 2 },
-    { text: 'What is 20 - 7?', options: ['11', '12', '13', '14'], correct: 1 },
-    { text: 'What is 5 + 5?', options: ['8', '9', '10', '11'], correct: 2 },
-    { text: 'What is 56 ÷ 8?', options: ['6', '7', '8', '9'], correct: 1 },
-    { text: 'What is 1/4 of 20?', options: ['4', '5', '6', '7'], correct: 1 },
-    { text: 'What is 18 ÷ 6?', options: ['2', '3', '4', '5'], correct: 1 },
-    { text: 'What is 42 + 18?', options: ['55', '58', '60', '62'], correct: 2 },
-    { text: 'What is 85 - 25?', options: ['55', '58', '60', '62'], correct: 2 },
-    { text: 'What is 7 × 7?', options: ['42', '45', '49', '52'], correct: 2 },
-    { text: 'What is 8 + 8?', options: ['14', '15', '16', '17'], correct: 2 },
-    { text: 'What is 24 ÷ 6?', options: ['3', '4', '5', '6'], correct: 1 },
-    { text: 'What is 65% of 100?', options: ['60', '62', '65', '68'], correct: 2 },
   ]
 
-  // REAL SCIENCE QUESTIONS (150+ UNIQUE)
   const scienceQuestions = [
     { text: 'Water boils at?', options: ['90°C', '100°C', '110°C', '120°C'], correct: 1 },
     { text: 'Water freezes at?', options: ['0°C', '10°C', '20°C', '32°C'], correct: 0 },
@@ -189,64 +110,8 @@ export default function QuizApp() {
     { text: 'Speed of sound?', options: ['300 m/s', '330 m/s', '350 m/s', '400 m/s'], correct: 1 },
     { text: 'Water density?', options: ['0.8 g/cm³', '1.0 g/cm³', '1.2 g/cm³', '1.5 g/cm³'], correct: 1 },
     { text: 'Solar system planets?', options: ['7', '8', '9', '10'], correct: 1 },
-    { text: 'Chemical formula salt?', options: ['NaCl', 'KCl', 'MgCl', 'CaCl'], correct: 0 },
-    { text: 'Chemical formula water?', options: ['H₂O', 'H₂O₂', 'HO', 'H₃O'], correct: 0 },
-    { text: 'Chemical formula sugar?', options: ['C₆H₁₀O₅', 'C₆H₁₂O₆', 'C₅H₁₂O₅', 'C₇H₁₂O₆'], correct: 1 },
-    { text: 'Octopus heart chambers?', options: ['1', '2', '3', '4'], correct: 2 },
-    { text: 'Largest organ?', options: ['Heart', 'Brain', 'Liver', 'Lung'], correct: 2 },
-    { text: 'Human chromosomes?', options: ['23', '46', '48', '50'], correct: 1 },
-    { text: 'Speed of light?', options: ['150,000 km/s', '300,000 km/s', '450,000 km/s', '600,000 km/s'], correct: 1 },
-    { text: 'Symbol for Iron?', options: ['Ir', 'Fe', 'In', 'I'], correct: 1 },
-    { text: 'Symbol for Copper?', options: ['Co', 'Cu', 'Cb', 'Cn'], correct: 1 },
-    { text: 'Bones in human ear?', options: ['2', '3', '4', '5'], correct: 1 },
-    { text: 'Smallest bone?', options: ['Stapes', 'Incus', 'Malleus', 'Femur'], correct: 0 },
-    { text: 'Human body muscles?', options: ['600', '650', '700', '750'], correct: 2 },
-    { text: 'Largest blood vessel?', options: ['Aorta', 'Vein', 'Capillary', 'Artery'], correct: 0 },
-    { text: 'Human body water %?', options: ['50%', '60%', '70%', '80%'], correct: 2 },
-    { text: 'Brain lobes?', options: ['2', '3', '4', '5'], correct: 2 },
-    { text: 'How plants make food?', options: ['Respiration', 'Photosynthesis', 'Digestion', 'Fermentation'], correct: 1 },
-    { text: 'Study of rocks?', options: ['Biology', 'Geology', 'Astronomy', 'Meteorology'], correct: 1 },
-    { text: 'Periodic table elements?', options: ['92', '100', '118', '150'], correct: 2 },
-    { text: 'Most abundant element universe?', options: ['Oxygen', 'Helium', 'Hydrogen', 'Carbon'], correct: 2 },
-    { text: 'Most abundant human body?', options: ['Oxygen', 'Carbon', 'Hydrogen', 'Nitrogen'], correct: 0 },
-    { text: 'Study of space?', options: ['Geology', 'Astronomy', 'Meteorology', 'Biology'], correct: 1 },
-    { text: 'Earthquake scientist?', options: ['Volcanologist', 'Seismologist', 'Geologist', 'Meteorologist'], correct: 1 },
-    { text: 'DNA stands for?', options: ['Deoxyribose', 'Nucleic Acid', 'Deoxyribonucleic Acid', 'None'], correct: 2 },
-    { text: 'ATP stands for?', options: ['Adenosine Triphosphate', 'Adenine Triphosphate', 'Adenosine Triple', 'None'], correct: 0 },
-    { text: 'Enzyme is?', options: ['Protein', 'Carbohydrate', 'Fat', 'Mineral'], correct: 0 },
-    { text: 'pH scale range?', options: ['0-10', '0-14', '1-7', '1-14'], correct: 1 },
-    { text: 'Normal blood pressure?', options: ['100/60', '120/80', '140/90', '160/100'], correct: 1 },
-    { text: 'Respiration occurs in?', options: ['Nucleus', 'Mitochondria', 'Ribosome', 'Membrane'], correct: 1 },
-    { text: 'Photosynthesis occurs in?', options: ['Nucleus', 'Chloroplast', 'Ribosome', 'Membrane'], correct: 1 },
-    { text: 'Plant cell has?', options: ['Cell wall', 'Chloroplast', 'Both', 'None'], correct: 2 },
-    { text: 'Animal cell lacks?', options: ['Nucleus', 'Chloroplast', 'Ribosome', 'Mitochondria'], correct: 1 },
-    { text: 'Velocity of sound water?', options: ['1500 m/s', '1484 m/s', '340 m/s', '3000 m/s'], correct: 1 },
-    { text: 'Boyle\'s law states?', options: ['P∝V', 'P∝1/V', 'P=T', 'V=T'], correct: 1 },
-    { text: 'Charles\'s law states?', options: ['V∝T', 'P∝T', 'V∝P', 'T∝1/P'], correct: 0 },
-    { text: 'Avogadro\'s number?', options: ['6.02×10²²', '6.02×10²³', '6.02×10²⁴', '6.02×10²⁵'], correct: 1 },
-    { text: 'Atomic mass unit?', options: ['1 g/mol', '12 g/mol', '1/12 of C-12', 'Mass of electron'], correct: 2 },
-    { text: 'Molarity defined as?', options: ['g/L', 'mol/L', 'mg/mL', 'mmol/mL'], correct: 1 },
-    { text: 'Lewis acid is?', options: ['Proton donor', 'Electron acceptor', 'H⁺ donor', 'OH⁻ donor'], correct: 1 },
-    { text: 'Redox reaction?', options: ['Transfer', 'Transfer of electrons', 'Exchange', 'Combination'], correct: 1 },
-    { text: 'Catalyst effect?', options: ['Increases product', 'Lowers activation', 'Increases yield', 'Increases temp'], correct: 1 },
-    { text: 'Isotopes differ in?', options: ['Protons', 'Neutrons', 'Electrons', 'Nucleus'], correct: 1 },
-    { text: 'Isobars have same?', options: ['Atomic number', 'Mass number', 'Electron', 'Protons'], correct: 1 },
-    { text: 'Allotropes of carbon?', options: ['Diamond', 'Graphite', 'Diamond, Graphite', 'Sulphur'], correct: 2 },
-    { text: 'Noble gas config?', options: ['s²p⁶', 's²p⁵', 's¹p⁶', 's³p⁶'], correct: 0 },
-    { text: 'Covalent bond?', options: ['Sharing electrons', 'Transfer', 'Electrostatic', 'Metallic'], correct: 0 },
-    { text: 'Ionic bond?', options: ['Sharing', 'Transfer electrons', 'Metallic', 'Coordinate'], correct: 1 },
-    { text: 'Metallic bond?', options: ['Sea of electrons', 'Sharing', 'Transfer', 'Coordinate'], correct: 0 },
-    { text: 'H-bond strongest in?', options: ['HF', 'HCl', 'HBr', 'HI'], correct: 0 },
-    { text: 'Van der Waals force?', options: ['Very strong', 'Very weak', 'Moderate', 'Ionic'], correct: 1 },
-    { text: 'Molar mass of CO₂?', options: ['40', '44', '48', '52'], correct: 1 },
-    { text: 'Molar mass of H₂SO₄?', options: ['96', '98', '100', '102'], correct: 1 },
-    { text: 'Atomic radius increases?', options: ['Period', 'Group', 'Across period', 'Down group'], correct: 3 },
-    { text: 'Ionization energy increases?', options: ['Down group', 'Left to right', 'Right to left', 'Random'], correct: 1 },
-    { text: 'Electron affinity?', options: ['Always positive', 'Always negative', 'Can vary', 'Zero'], correct: 2 },
-    { text: 'Electronegativity measures?', options: ['Size', 'Charge', 'Attraction to electrons', 'Protons'], correct: 2 },
   ]
 
-  // REAL SOCIAL SCIENCE QUESTIONS (150+ UNIQUE)
   const socialQuestions = [
     { text: 'Capital of France?', options: ['Lyon', 'Marseille', 'Paris', 'Nice'], correct: 2 },
     { text: 'Capital of India?', options: ['Mumbai', 'Bangalore', 'Delhi', 'Kolkata'], correct: 2 },
@@ -260,64 +125,16 @@ export default function QuizApp() {
     { text: 'Capital of Canada?', options: ['Toronto', 'Vancouver', 'Ottawa', 'Montreal'], correct: 2 },
     { text: 'First US President?', options: ['Jefferson', 'Washington', 'Adams', 'Madison'], correct: 1 },
     { text: 'First India PM?', options: ['Shastri', 'Gandhi', 'Nehru', 'Prasad'], correct: 2 },
-    { text: 'USA independence year?', options: ['1774', '1775', '1776', '1777'], correct: 2 },
-    { text: 'India independence year?', options: ['1945', '1946', '1947', '1948'], correct: 2 },
+    { text: 'USA independence?', options: ['1774', '1775', '1776', '1777'], correct: 2 },
+    { text: 'India independence?', options: ['1945', '1946', '1947', '1948'], correct: 2 },
     { text: 'Largest continent?', options: ['Africa', 'Asia', 'Europe', 'North America'], correct: 1 },
     { text: 'Second largest continent?', options: ['Asia', 'Africa', 'Europe', 'South America'], correct: 1 },
     { text: 'Smallest continent?', options: ['Europe', 'Australia', 'Antarctica', 'North America'], correct: 1 },
     { text: 'World countries count?', options: ['180', '190', '195', '205'], correct: 2 },
     { text: 'Capital of Italy?', options: ['Venice', 'Milan', 'Rome', 'Florence'], correct: 2 },
     { text: 'Capital of Spain?', options: ['Barcelona', 'Valencia', 'Madrid', 'Seville'], correct: 2 },
-    { text: 'Capital of Mexico?', options: ['Cancun', 'Guadalajara', 'Mexico City', 'Monterrey'], correct: 2 },
-    { text: 'Capital of Brazil?', options: ['Rio de Janeiro', 'Salvador', 'Brasília', 'São Paulo'], correct: 2 },
-    { text: 'Capital of Egypt?', options: ['Alexandria', 'Giza', 'Cairo', 'Aswan'], correct: 2 },
-    { text: 'Capital of South Africa?', options: ['Johannesburg', 'Durban', 'Pretoria', 'Cape Town'], correct: 2 },
-    { text: 'Capital of Russia?', options: ['St. Petersburg', 'Novosibirsk', 'Moscow', 'Yekaterinburg'], correct: 2 },
-    { text: 'Capital of China?', options: ['Shanghai', 'Guangzhou', 'Beijing', 'Chongqing'], correct: 2 },
-    { text: 'Capital of South Korea?', options: ['Busan', 'Incheon', 'Seoul', 'Daegu'], correct: 2 },
-    { text: 'Capital of Thailand?', options: ['Chiang Mai', 'Phuket', 'Bangkok', 'Pattaya'], correct: 2 },
-    { text: 'Capital of Greece?', options: ['Thessaloniki', 'Patras', 'Athens', 'Larissa'], correct: 2 },
-    { text: 'Capital of Turkey?', options: ['Istanbul', 'Izmir', 'Ankara', 'Bursa'], correct: 2 },
-    { text: 'Largest ocean?', options: ['Atlantic', 'Indian', 'Arctic', 'Pacific'], correct: 3 },
-    { text: 'Highest mountain?', options: ['K2', 'Kangchenjunga', 'Mount Everest', 'Lhotse'], correct: 2 },
-    { text: 'Deepest ocean trench?', options: ['Tonga', 'Kuril', 'Mariana', 'Philippine'], correct: 2 },
-    { text: 'Hottest place on Earth?', options: ['Sahara', 'Death Valley', 'Arabian Desert', 'Lut Desert'], correct: 3 },
-    { text: 'Coldest place on Earth?', options: ['Siberia', 'Greenland', 'Antarctica', 'Canada'], correct: 2 },
-    { text: 'Largest desert?', options: ['Gobi', 'Arabian', 'Kalahari', 'Sahara'], correct: 3 },
-    { text: 'Largest island?', options: ['Borneo', 'Sumatra', 'Madagascar', 'Greenland'], correct: 3 },
-    { text: 'Longest mountain range?', options: ['Rocky', 'Himalayas', 'Andes', 'Alps'], correct: 2 },
-    { text: 'WWI ended year?', options: ['1916', '1917', '1918', '1919'], correct: 2 },
-    { text: 'WWII ended year?', options: ['1943', '1944', '1945', '1946'], correct: 2 },
-    { text: 'French Revolution year?', options: ['1789', '1799', '1809', '1819'], correct: 0 },
-    { text: 'Industrial Revolution when?', options: ['1600s', '1700s', '1800s', '1900s'], correct: 1 },
-    { text: 'Renaissance period?', options: ['Medieval', '14-17 century', 'Modern', 'Ancient'], correct: 1 },
-    { text: 'Dark Ages approximately?', options: ['500-1000 AD', '1000-1500 AD', '1500-2000 AD', '2000-2500 AD'], correct: 0 },
-    { text: 'Ancient Rome founded?', options: ['800 BC', '753 BC', '500 BC', '100 BC'], correct: 1 },
-    { text: 'Ancient Egypt dynasty?', options: ['30', '35', '40', '50'], correct: 2 },
-    { text: 'Great Wall of China length?', options: ['5000 km', '13000 km', '21000 km', '30000 km'], correct: 2 },
-    { text: 'Taj Mahal built by?', options: ['Akbar', 'Shah Jahan', 'Aurangzeb', 'Babar'], correct: 1 },
-    { text: 'Colosseum in?', options: ['Greece', 'Egypt', 'Rome', 'Turkey'], correct: 2 },
-    { text: 'Statue of Liberty gift from?', options: ['UK', 'France', 'Germany', 'Spain'], correct: 1 },
-    { text: 'Magna Carta year?', options: ['1115', '1215', '1315', '1415'], correct: 1 },
-    { text: 'American Civil War?', options: ['1850-1865', '1860-1875', '1861-1865', '1870-1880'], correct: 2 },
-    { text: 'Indian Rebellion year?', options: ['1857', '1867', '1877', '1887'], correct: 0 },
-    { text: 'Meiji Restoration year?', options: ['1858', '1868', '1878', '1888'], correct: 1 },
-    { text: 'Russian Revolution year?', options: ['1907', '1917', '1927', '1937'], correct: 1 },
-    { text: 'Jallianwala Bagh incident?', options: ['1919', '1920', '1921', '1922'], correct: 0 },
-    { text: 'Partition of India?', options: ['1945', '1946', '1947', '1948'], correct: 2 },
-    { text: 'Cold War started?', options: ['1945', '1950', '1955', '1960'], correct: 0 },
-    { text: 'Fall of Berlin Wall?', options: ['1987', '1988', '1989', '1990'], correct: 2 },
-    { text: 'Moon landing year?', options: ['1967', '1968', '1969', '1970'], correct: 2 },
-    { text: 'First computer invented?', options: ['1930s', '1940s', '1950s', '1960s'], correct: 1 },
-    { text: 'Internet invented when?', options: ['1960s', '1970s', '1980s', '1990s'], correct: 1 },
-    { text: 'World Wide Web created?', options: ['1989', '1990', '1991', '1992'], correct: 1 },
-    { text: 'First iPhone released?', options: ['2005', '2006', '2007', '2008'], correct: 2 },
-    { text: 'Social Security started?', options: ['1933', '1935', '1937', '1939'], correct: 1 },
-    { text: 'League of Nations formed?', options: ['1919', '1920', '1921', '1922'], correct: 0 },
-    { text: 'United Nations formed?', options: ['1944', '1945', '1946', '1947'], correct: 1 },
   ]
 
-  // REAL CURRENT AFFAIRS QUESTIONS (150+ UNIQUE)
   const currentQuestions = [
     { text: 'UN Secretary-General 2024?', options: ['Ban Ki-moon', 'António Guterres', 'Kofi Annan', 'Dag Hammarskjöld'], correct: 1 },
     { text: 'Paris Climate Agreement?', options: ['2013', '2014', '2015', '2016'], correct: 2 },
@@ -329,51 +146,6 @@ export default function QuizApp() {
     { text: 'Most populous country?', options: ['India', 'USA', 'Indonesia', 'China'], correct: 0 },
     { text: 'India literacy rate?', options: ['65%', '70%', '74%', '80%'], correct: 2 },
     { text: 'USD to INR rate?', options: ['75', '80', '83', '85'], correct: 2 },
-    { text: 'Strongest military?', options: ['China', 'Russia', 'India', 'USA'], correct: 3 },
-    { text: 'Tallest building?', options: ['Shanghai Tower', 'Makkah Clock', 'Burj Khalifa', 'One World Trade'], correct: 2 },
-    { text: 'Richest person 2024?', options: ['Warren Buffet', 'Bernard Arnault', 'Bill Gates', 'Elon Musk'], correct: 1 },
-    { text: 'India GDP rank?', options: ['4th', '5th', '6th', '7th'], correct: 1 },
-    { text: 'Fastest growing economy?', options: ['USA', 'China', 'India', 'Germany'], correct: 2 },
-    { text: 'World population?', options: ['7 billion', '8 billion', '9 billion', '10 billion'], correct: 1 },
-    { text: 'Earth water %?', options: ['61%', '71%', '81%', '91%'], correct: 1 },
-    { text: 'UN members count?', options: ['190', '193', '196', '200'], correct: 1 },
-    { text: 'Olympic Games held?', options: ['Every 2 years', 'Every 3 years', 'Every 4 years', 'Every 5 years'], correct: 2 },
-    { text: 'UN Security Council permanent?', options: ['3', '5', '7', '9'], correct: 1 },
-    { text: 'BRICS member count?', options: ['4', '5', '6', '7'], correct: 1 },
-    { text: 'Left European Union?', options: ['Ireland', 'France', 'UK', 'Netherlands'], correct: 2 },
-    { text: 'Nobel Peace Prize 2023?', options: ['Malala', 'Santos', 'Narges Mohammadi', 'Denis Mukwege'], correct: 2 },
-    { text: 'Olympics 2024 host?', options: ['Paris', 'Tokyo', 'Los Angeles', 'Beijing'], correct: 0 },
-    { text: 'UN headquarters?', options: ['Geneva', 'Brussels', 'New York', 'Vienna'], correct: 2 },
-    { text: 'IMF headquarters?', options: ['Washington', 'London', 'Geneva', 'New York'], correct: 0 },
-    { text: 'World Bank headquarters?', options: ['Washington', 'London', 'New York', 'Geneva'], correct: 0 },
-    { text: 'WTO headquarters?', options: ['Washington', 'Geneva', 'London', 'Brussels'], correct: 1 },
-    { text: 'India president 2024?', options: ['Ram Nath Kovind', 'Droupadi Murmu', 'Pratibha Patil', 'Pranab Mukherjee'], correct: 1 },
-    { text: 'India PM 2024?', options: ['Narendra Modi', 'Manmohan Singh', 'Atal Bihari', 'PV Narasimha'], correct: 0 },
-    { text: 'USA President 2024?', options: ['Barack Obama', 'Donald Trump', 'Joe Biden', 'George Bush'], correct: 2 },
-    { text: 'UK PM 2024?', options: ['Boris Johnson', 'Theresa May', 'Keir Starmer', 'Liz Truss'], correct: 2 },
-    { text: 'UN SDGS count?', options: ['15', '17', '19', '21'], correct: 1 },
-    { text: 'Paris Agreement goal?', options: ['1.5°C', '2°C', '2.5°C', '3°C'], correct: 0 },
-    { text: 'WHO founded?', options: ['1945', '1948', '1950', '1952'], correct: 1 },
-    { text: 'UNESCO founded?', options: ['1945', '1946', '1947', '1948'], correct: 0 },
-    { text: 'First email sent?', options: ['1971', '1972', '1973', '1974'], correct: 0 },
-    { text: 'First website created?', options: ['1989', '1990', '1991', '1992'], correct: 2 },
-    { text: 'First smartphone?', options: ['2000', '2005', '2007', '2010'], correct: 2 },
-    { text: 'COVID-19 started?', options: ['2018', '2019', '2020', '2021'], correct: 1 },
-    { text: 'India Space Program founded?', options: ['1969', '1971', '1973', '1975'], correct: 1 },
-    { text: 'Chandrayaan-1 launched?', options: ['2006', '2008', '2010', '2012'], correct: 1 },
-    { text: 'Mangalyaan launched?', options: ['2011', '2012', '2013', '2014'], correct: 2 },
-    { text: 'Chandrayaan-3 successful?', options: ['2022', '2023', '2024', '2025'], correct: 1 },
-    { text: 'Aditya-L1 mission?', options: ['Solar probe', 'Moon probe', 'Mars probe', 'Venus probe'], correct: 0 },
-    { text: 'IPL started?', options: ['2006', '2007', '2008', '2009'], correct: 1 },
-    { text: 'Cricket world cup 2023?', options: ['India', 'Australia', 'Pakistan', 'England'], correct: 1 },
-    { text: 'Olympics 2020 held?', options: ['2019', '2020', '2021', '2022'], correct: 2 },
-    { text: 'Commonwealth Games 2022?', options: ['London', 'Delhi', 'Birmingham', 'Melbourne'], correct: 2 },
-    { text: 'G20 Chair 2023?', options: ['Japan', 'Indonesia', 'India', 'Brazil'], correct: 2 },
-    { text: 'BIMSTEC founded?', options: ['1995', '1997', '1999', '2001'], correct: 1 },
-    { text: 'SAARC founded?', options: ['1985', '1987', '1989', '1991'], correct: 0 },
-    { text: 'ASEAN founded?', options: ['1965', '1967', '1969', '1971'], correct: 1 },
-    { text: 'African Union founded?', options: ['1963', '1965', '1967', '1969'], correct: 0 },
-    { text: 'Arab League founded?', options: ['1945', '1947', '1949', '1951'], correct: 0 },
   ]
 
   const allRealQuestions = {
@@ -383,14 +155,15 @@ export default function QuizApp() {
     current: currentQuestions,
   }
 
-  // NO DUPLICATION - GET RANDOM UNIQUE QUESTIONS
   const getRandomQuestions = (questions, count = 20) => {
     const shuffled = [...questions].sort(() => Math.random() - 0.5)
     return shuffled.slice(0, Math.min(count, questions.length))
   }
 
+  // LOAD USER STATS
   useEffect(() => {
     const savedUser = localStorage.getItem('quizMasterUser')
+    const savedStats = localStorage.getItem(`quizMasterStats_${userData?.id || ''}`)
     const savedQuizzes = localStorage.getItem('quizMasterQuizzes')
     const savedUsers = localStorage.getItem('quizMasterUsers')
     
@@ -400,10 +173,13 @@ export default function QuizApp() {
         setUserData(user)
         setUserRole(user.role)
         setScreen(user.role === 'admin' ? 'admin' : 'home')
+        
+        if (savedStats) {
+          setUserStats(JSON.parse(savedStats))
+        }
       } catch (e) {}
     }
     
-    // CREATE GK QUIZZES WITH REAL QUESTIONS (NO DUPLICATION)
     const newQuizzes = {
       'mathematics': { name: 'Mathematics (150+ Q)', questions: mathQuestions, isGK: true },
       'science': { name: 'Science (150+ Q)', questions: scienceQuestions, isGK: true },
@@ -427,17 +203,12 @@ export default function QuizApp() {
     setAllUsers(savedUsers ? JSON.parse(savedUsers) : {})
   }, [])
 
+  // SAVE USER STATS
   useEffect(() => {
-    if (userData) localStorage.setItem('quizMasterUser', JSON.stringify(userData))
-  }, [userData])
-
-  useEffect(() => {
-    localStorage.setItem('quizMasterQuizzes', JSON.stringify(allQuizzes))
-  }, [allQuizzes])
-
-  useEffect(() => {
-    localStorage.setItem('quizMasterUsers', JSON.stringify(allUsers))
-  }, [allUsers])
+    if (userData?.id) {
+      localStorage.setItem(`quizMasterStats_${userData.id}`, JSON.stringify(userStats))
+    }
+  }, [userStats, userData])
 
   const parseQuestionsFromFile = async (file) => {
     try {
@@ -531,6 +302,7 @@ export default function QuizApp() {
     const randomQuestions = getRandomQuestions(quiz.questions, 20)
     setCurrentQuizzes([{ id: quizKey, name: quiz.name, questions: randomQuestions }])
     setPlayers([])
+    setGameStartTime(Date.now())
     setScreen('waiting')
   }
 
@@ -610,7 +382,112 @@ export default function QuizApp() {
     )
   }
 
-  // HOME (Subscriber)
+  // PERFORMANCE DASHBOARD SCREEN
+  if (screen === 'dashboard') {
+    const categoryNames = { mathematics: '📐 Mathematics', science: '🔬 Science', social: '🌍 Social Science', current: '📰 Current Affairs' }
+    const successRate = userStats.quizzesTaken > 0 ? Math.round((userStats.totalScore / (userStats.quizzesTaken * 3000)) * 100) : 0
+    
+    return (
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '2rem', color: 'white' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <h1 style={{ margin: 0, fontSize: '32px' }}>📊 Performance Dashboard</h1>
+            <button onClick={() => setScreen('home')} style={{ padding: '0.75rem 1.5rem', background: '#FF6B6B', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>← Back Home</button>
+          </div>
+
+          {/* KEY STATS */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '3rem' }}>
+            <div style={{ background: 'rgba(255,255,255,0.15)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+              <p style={{ margin: 0, fontSize: '12px', color: '#FFE66D' }}>📚 Quizzes Taken</p>
+              <p style={{ margin: '0.5rem 0 0', fontSize: '28px', fontWeight: 'bold' }}>{userStats.quizzesTaken}</p>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,0.15)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+              <p style={{ margin: 0, fontSize: '12px', color: '#FFE66D' }}>💯 Total Score</p>
+              <p style={{ margin: '0.5rem 0 0', fontSize: '28px', fontWeight: 'bold' }}>{userStats.totalScore.toLocaleString()}</p>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,0.15)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+              <p style={{ margin: 0, fontSize: '12px', color: '#FFE66D' }}>📈 Average Score</p>
+              <p style={{ margin: '0.5rem 0 0', fontSize: '28px', fontWeight: 'bold' }}>{userStats.averageScore.toFixed(0)}</p>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,0.15)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+              <p style={{ margin: 0, fontSize: '12px', color: '#FFE66D' }}>🏆 Best Score</p>
+              <p style={{ margin: '0.5rem 0 0', fontSize: '28px', fontWeight: 'bold' }}>{userStats.bestScore}</p>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,0.15)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+              <p style={{ margin: 0, fontSize: '12px', color: '#FFE66D' }}>✅ Success Rate</p>
+              <p style={{ margin: '0.5rem 0 0', fontSize: '28px', fontWeight: 'bold' }}>{successRate}%</p>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,0.15)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+              <p style={{ margin: 0, fontSize: '12px', color: '#FFE66D' }}>🔥 Current Streak</p>
+              <p style={{ margin: '0.5rem 0 0', fontSize: '28px', fontWeight: 'bold' }}>{userStats.currentStreak} days</p>
+            </div>
+          </div>
+
+          {/* CATEGORY PERFORMANCE */}
+          <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '12px', padding: '2rem', marginBottom: '3rem' }}>
+            <h2 style={{ marginTop: 0, marginBottom: '1.5rem', fontSize: '20px' }}>📚 Performance by Category</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
+              {['mathematics', 'science', 'social', 'current'].map(cat => {
+                const attempts = userStats.categoryAttempts[cat] || 0
+                const score = userStats.categoryScores[cat] || 0
+                const avgScore = attempts > 0 ? (score / attempts).toFixed(0) : 0
+                const successRate = userStats.categorySuccessRate[cat] || 0
+                
+                return (
+                  <div key={cat} style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '8px' }}>
+                    <p style={{ margin: '0 0 0.5rem', fontWeight: 'bold', fontSize: '14px' }}>{categoryNames[cat]}</p>
+                    <div style={{ marginBottom: '0.75rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem', fontSize: '12px' }}>
+                        <span>Quizzes:</span>
+                        <span>{attempts}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem', fontSize: '12px' }}>
+                        <span>Avg Score:</span>
+                        <span>{avgScore}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+                        <span>Success Rate:</span>
+                        <span>{successRate}%</span>
+                      </div>
+                    </div>
+                    {/* PROGRESS BAR */}
+                    <div style={{ background: 'rgba(0,0,0,0.3)', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
+                      <div style={{ background: successRate > 70 ? '#51CF66' : successRate > 40 ? '#FFE66D' : '#FF6B6B', height: '100%', width: `${Math.min(successRate, 100)}%`, transition: 'width 0.3s' }}></div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* RECENT QUIZZES */}
+          <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '12px', padding: '2rem' }}>
+            <h2 style={{ marginTop: 0, marginBottom: '1.5rem', fontSize: '20px' }}>📜 Recent Quiz History</h2>
+            {userStats.quizHistory.length === 0 ? (
+              <p style={{ color: '#FFE66D' }}>No quizzes taken yet. Take a quiz to see your history!</p>
+            ) : (
+              <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                {userStats.quizHistory.slice().reverse().map((quiz, idx) => (
+                  <div key={idx} style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', marginBottom: '0.75rem', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <p style={{ margin: 0, fontWeight: 'bold', fontSize: '14px' }}>{quiz.quizName}</p>
+                      <p style={{ margin: '0.3rem 0 0', fontSize: '12px', color: '#ddd' }}>{new Date(quiz.date).toLocaleDateString()}</p>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <p style={{ margin: 0, fontSize: '18px', fontWeight: 'bold', color: quiz.score > 1500 ? '#51CF66' : quiz.score > 1000 ? '#FFE66D' : '#FF6B6B' }}>{quiz.score}</p>
+                      <p style={{ margin: '0.2rem 0 0', fontSize: '11px', color: '#ddd' }}>Rank {quiz.rank}/{quiz.totalPlayers}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // HOME
   if (screen === 'home' && userRole === 'subscribe') {
     const gkQuizzes = Object.entries(allQuizzes).filter(([k, v]) => v.isGK === true)
     const cbseQuizzes = Object.entries(allQuizzes).filter(([k]) => k.startsWith('cbse'))
@@ -620,7 +497,10 @@ export default function QuizApp() {
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
             <div><h1 style={{ margin: 0, fontSize: '32px' }}>🎯 Quiz Master</h1><p style={{ margin: '0.5rem 0 0', fontSize: '14px' }}>Hello {userData?.name}!</p><p style={{ margin: '0.3rem 0 0', fontSize: '12px', color: '#FFE66D' }}>Access expires: {new Date(userData?.expiryDate).toLocaleDateString()}</p></div>
-            <button onClick={logout} style={{ padding: '0.75rem 1.5rem', background: '#FF6B6B', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>Logout</button>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button onClick={() => setScreen('dashboard')} style={{ padding: '0.75rem 1.5rem', background: '#4ECDC4', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>📊 Dashboard</button>
+              <button onClick={logout} style={{ padding: '0.75rem 1.5rem', background: '#FF6B6B', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>Logout</button>
+            </div>
           </div>
 
           <h2 style={{ marginBottom: '1.5rem', fontSize: '24px' }}>📚 General Knowledge</h2>
@@ -654,7 +534,7 @@ export default function QuizApp() {
     )
   }
 
-  // ADMIN DASHBOARD
+  // ADMIN
   if (screen === 'admin' && userRole === 'admin') {
     const allSubscribers = Object.values(allUsers).filter(u => u.role === 'subscribe' || !u.role)
     const cbseQuizzes = Object.entries(allQuizzes).filter(([k]) => k.startsWith('cbse'))
@@ -819,6 +699,35 @@ export default function QuizApp() {
     const userScore = sorted.find(p => p.id === players[0]?.id)
     const userRank = sorted.findIndex(p => p.id === players[0]?.id) + 1
     
+    // UPDATE USER STATS
+    useEffect(() => {
+      if (userScore) {
+        const quizName = currentQuizzes[0]?.name || 'Unknown Quiz'
+        const categoryKey = Object.keys(allQuizzes).find(key => allQuizzes[key].name === quizName)?.split('-')[0] || 'unknown'
+        
+        setUserStats(prev => {
+          const categoryAttempts = (prev.categoryAttempts[categoryKey] || 0) + 1
+          const categoryScores = (prev.categoryScores[categoryKey] || 0) + userScore.score
+          const categorySuccessRate = Math.round((categoryScores / (categoryAttempts * 3000)) * 100)
+          
+          return {
+            quizzesTaken: prev.quizzesTaken + 1,
+            totalScore: prev.totalScore + userScore.score,
+            averageScore: (prev.totalScore + userScore.score) / (prev.quizzesTaken + 1),
+            bestScore: Math.max(prev.bestScore, userScore.score),
+            categoryScores: { ...prev.categoryScores, [categoryKey]: categoryScores },
+            categoryAttempts: { ...prev.categoryAttempts, [categoryKey]: categoryAttempts },
+            categorySuccessRate: { ...prev.categorySuccessRate, [categoryKey]: categorySuccessRate },
+            quizHistory: [...prev.quizHistory, { quizName, score: userScore.score, rank: userRank, totalPlayers: sorted.length, date: new Date().toISOString() }],
+            totalTimeSpent: prev.totalTimeSpent + (gameStartTime ? Math.round((Date.now() - gameStartTime) / 1000) : 0),
+            currentStreak: userScore.score > 1000 ? prev.currentStreak + 1 : 0,
+            bestStreak: Math.max(prev.bestStreak, userScore.score > 1000 ? prev.currentStreak + 1 : 0),
+            lastPlayedDate: new Date().toISOString()
+          }
+        })
+      }
+    }, [])
+
     const generateResultsMessage = () => {
       const quiz = currentQuizzes[0]?.name || 'Quiz'
       const score = userScore?.score || 0
