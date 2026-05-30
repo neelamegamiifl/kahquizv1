@@ -1,7 +1,6 @@
 {
-  "name": "kidsquizz",
+  "name": "quiz-app",
   "version": "1.0.0",
-  "description": "Multiplayer quiz game",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,13 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
-    "next": "14.2.3",
+    "next": "15.3.2",
     "react": "18.3.1",
     "react-dom": "18.3.1"
-  },
-  "engines": {
-    "node": "24.x"
   }
 }
-
-
